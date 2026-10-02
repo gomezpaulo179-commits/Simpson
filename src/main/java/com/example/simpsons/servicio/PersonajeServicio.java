@@ -14,8 +14,28 @@ public class PersonajeServicio {
     private final PersonajeRepository repositorio = new PersonajeRepository();
 
 
-    public List<Personaje> buscar(){
-    return repositorio.findAll();
+    public List<Personaje> buscar(String lugar,
+                                  Integer edadMax,
+                                  String ordenarPor, //pendiente
+                                  boolean descendente, //pendiente
+                                  Integer limite){
+    return repositorio.findAll().stream()
+            .filter(p -> lugar == null || lugar.isBlank() || p.lugar().equalsIgnoreCase(lugar))
+            .filter(p -> edadMax == null || p.edad() > edadMax)
+            .sorted((p1, p2) -> p1.nombre().compareTo(p2.nombre()))
+            .limit(limite == null ? Integer.MAX_VALUE : limite)
+            .toList();
+    }
+    public List<String> lugaresDisponibles(){
+        //forma 1 funcional
+        return repositorio.findAll().stream()
+                //.map(p -> p.lugar())
+                .map(Personaje::lugar).distinct()
+                .sorted()
+                .toList();
+        //forma 2 imperativo
+
+        //forma 3 convierto a set (conjunto no repetido)
     }
 
 
